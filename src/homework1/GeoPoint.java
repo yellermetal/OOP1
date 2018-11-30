@@ -140,7 +140,7 @@ public class GeoPoint {
   		int gpCenteredLatitude = gp.getLatitude() - latitude_;
   		int gpCenteredLongitude = gp.getLongitude() - longitude_;
   		double headingDirection = Math.atan2(gpCenteredLatitude, gpCenteredLongitude) * 180 / Math.PI;
-  		double nonNegativeDirection = (headingDirection > 0 ) ? headingDirection : headingDirection * (-1);
+  		double nonNegativeDirection = (headingDirection >= 0 ) ? headingDirection : headingDirection * (-1);
   		checkRep();
   		return nonNegativeDirection;
   	}
