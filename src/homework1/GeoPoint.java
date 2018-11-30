@@ -15,6 +15,7 @@ package homework1;
  * to 32.783098 North latitude and 35.014528 East longitude. The 
  * constructor takes integers in millionths of degrees. To create a new
  * GeoPoint located in the the Ziv square, use:
+ * 
  * <tt>GeoPoint zivCrossroad = new GeoPoint(32783098,35014528);</tt>
  * <p>
  * Near the Technion, there are approximately 110.901 kilometers per degree
@@ -29,6 +30,10 @@ package homework1;
  * </pre>
  **/
 public class GeoPoint {
+	private final int latitude_;
+	private final int longitude_;
+
+
 
 	/** Minimum value the latitude field can have in this class. **/
 	public static final int MIN_LATITUDE  =  -90 * 1000000;
@@ -54,19 +59,19 @@ public class GeoPoint {
      */
   	public static final double KM_PER_DEGREE_LONGITUDE = 93.681;
   	
-	// Implementation hint:
-	// Doubles and floating point math can cause some problems. The exact
-	// value of a double can not be guaranteed except within some epsilon.
-	// Because of this, using doubles for the equals() and hashCode()
-	// methods can have erroneous results. Do not use floats or doubles for
-	// any computations in hashCode(), equals(), or where any other time 
-	// exact values are required. (Exact values are not required for length 
-	// and distance computations). Because of this, you should consider 
-	// using ints for your internal representation of GeoPoint. 
+  	public static final int MILLION = 1000000;
+  	
 
-  	
-  	// TODO Write abstraction function and representation invariant
-  	
+	// Abstraction Function:
+	// The latitude and longitude degree is latitude_/10^6 and longitude_/10^6, the minutes are
+	// first two digits of (latitude_%10^6)*60 and (longitude_%10^6)*60.
+	// Seconds are the first two digits of [(latitude_%10^6)-(minutes of latitude)*(10^6)/60]*3600
+  	// and the first two digits of [(longitude_%10^6)-(minutes of longitude)*(10^6)/60]*3600
+	
+	// Representation invariant for every GeoPoint p:
+	// (MIN_LATITUDE <= p.latitude_ <= MAX_LATITUDE)
+	// (MIN_LONGITUDE <= p.longitude_ <= MAX_LONGITUDE)
+
   	
   	/**
   	 * Constructs GeoPoint from a latitude and longitude.
@@ -78,7 +83,9 @@ public class GeoPoint {
      *          given in millionths of degrees.
    	 **/
   	public GeoPoint(int latitude, int longitude) {
-  		// TODO Implement this constructor
+  		latitude_ = latitude;
+  		longitude_ = longitude;
+  		checkRep();
   	}
 
   	 
@@ -87,7 +94,8 @@ public class GeoPoint {
      * @return the latitude of this in millionths of degrees.
      */
   	public int getLatitude() {
-  		// TODO Implement this method
+  		checkRep();
+  		return latitude_;
   	}
 
 
@@ -96,7 +104,8 @@ public class GeoPoint {
      * @return the latitude of this in millionths of degrees.
      */
   	public int getLongitude() {
-  		// TODO Implement this method
+  		checkRep();
+  		return longitude_;
   	}
 
 
@@ -107,7 +116,14 @@ public class GeoPoint {
      *         the Technion approximation.
      **/
   	public double distanceTo(GeoPoint gp) {
-  		// TODO Implement this method
+  		checkRep();
+  		double gpLatitudeInKm = (((double)( gp.getLatitude())) / MILLION ) * KM_PER_DEGREE_LATITUDE;
+  		double gpLongitudeInKm = (((double)( gp.getLongitude())) / MILLION ) * KM_PER_DEGREE_LONGITUDE;
+  		double thisLatitudeInKm = (((double)( latitude_)) / MILLION ) * KM_PER_DEGREE_LATITUDE;
+  		double thisLongitudeInKm = (((double)( longitude_)) / MILLION ) * KM_PER_DEGREE_LONGITUDE;
+  		double distance = Math.sqrt( Math.pow( ( gpLatitudeInKm - thisLatitudeInKm ), 2) + Math.pow( ( gpLongitudeInKm - thisLongitudeInKm ), 2) );
+  		checkRep();
+  		return distance;
   	}
 
 
@@ -120,17 +136,13 @@ public class GeoPoint {
      *         south = 180, and west = 270.
      **/
   	public double headingTo(GeoPoint gp) {
-		 //	Implementation hints:
-		 // 1. You may find the mehtod Math.atan2() useful when
-		 // implementing this method. More info can be found at:
-		 // http://docs.oracle.com/javase/8/docs/api/java/lang/Math.html
-		 //
-		 // 2. Keep in mind that in our coordinate system, north is 0
-		 // degrees and degrees increase in the clockwise direction. By
-		 // mathematical convention, "east" is 0 degrees, and degrees
-		 // increase in the counterclockwise direction. 
-		 
-  		// TODO Implement this method
+  		checkRep();
+  		int gpCenteredLatitude = gp.getLatitude() - latitude_;
+  		int gpCenteredLongitude = gp.getLongitude() - longitude_;
+  		double headingDirection = Math.atan2(gpCenteredLatitude, gpCenteredLongitude) * 180 / Math.PI;
+  		double nonNegativeDirection = (headingDirection > 0 ) ? headingDirection : headingDirection * (-1);
+  		checkRep();
+  		return nonNegativeDirection;
   	}
 
 
@@ -140,7 +152,15 @@ public class GeoPoint {
      * 		   gp.latitude = this.latitude && gp.longitude = this.longitude
      **/
   	public boolean equals(Object gp) {
-  		// TODO Implement this method
+  		checkRep();
+  		if(gp == null || !(gp instanceof GeoPoint))
+  		{
+  			return false;
+  		}
+  		GeoPoint gpTmp = (GeoPoint)gp;
+  		boolean result = ( gpTmp.getLatitude() == this.latitude_ && gpTmp.getLongitude() == this.longitude_) ? true : false ;
+  		checkRep();
+  		return result;		 		 
   	}
 
 
@@ -149,10 +169,10 @@ public class GeoPoint {
      * @return a hash code value for this GeoPoint.
    	 **/
   	public int hashCode() {
-    	// This implementation will work, but you may want to modify it
-    	// for improved performance.
-
-    	return 1;
+  		checkRep();
+  		int hashCode = latitude_ + longitude_;
+  		checkRep();
+  		return hashCode;
   	}
 
 
@@ -161,7 +181,59 @@ public class GeoPoint {
      * @return a string representation of this GeoPoint.
      **/
   	public String toString() {
-  		// TODO Implement this method
+  		checkRep();
+  		int signLatitude = (int) Math.signum(latitude_);
+  		int signLongitude = (int) Math.signum(longitude_);
+  		int tmpLatitude_ = latitude_ * signLatitude;
+  		int tmpLongitude_ = longitude_ * signLongitude;
+  		
+  		// Acquiring the degrees of latitude and longitude 
+  		int degreeLatitude = tmpLatitude_ / MILLION;
+  		int degreeLongitude = tmpLongitude_ / MILLION;
+  		
+  		// Acquiring the minutes of latitude and longitude 
+  		int minuteLatitude = (tmpLatitude_ % MILLION) * 60;
+  		int minuteLongitude = (tmpLongitude_ % MILLION) * 60;
+  		
+  		int i = 0;
+  		for (i = 0; i < 6 ; i++)
+  		{
+  			minuteLatitude =  minuteLatitude / 10;
+  			minuteLongitude = minuteLongitude / 10;
+	
+  		}
+  		
+  		// Acquiring the rounded seconds of latitude and longitude 
+  		int secondsLatitude = ((tmpLatitude_ % MILLION) - (minuteLatitude * MILLION) / 60 ) * 3600;
+  		int secondsLongitude = ((tmpLongitude_ % MILLION) - (minuteLongitude * MILLION) / 60 ) * 3600;	
+  		
+  		for (i = 0; i < 6 ; i++)
+  		{
+  			secondsLatitude =  secondsLatitude / 10;
+  			secondsLongitude = secondsLongitude / 10;
+	
+  		}
+  		
+  		String latitudeString = Integer.toString(degreeLatitude) + " degrees. " + Integer.toString(minuteLatitude) + " minutes. " + Integer.toString(secondsLatitude) + " seconds.";
+  		String longitudeString = Integer.toString(degreeLongitude) + " degrees. " + Integer.toString(minuteLongitude) + " minutes. " + Integer.toString(secondsLongitude) + " seconds.";
+  		
+  		latitudeString += (signLatitude > 0) ? " N latitude." :" S latitude.";
+  		longitudeString += (signLongitude > 0) ? " E longitude." :" W longitude.";
+  		
+  		String geoPointString = latitudeString + " , " + longitudeString;
+  		checkRep();
+  		return geoPointString;
   	}
+  	/**
+     * Checks to see if the representation invariant is being violated.
+     * @throws AssertionError if representation invariant is violated.
+     **/
+  	private void checkRep() {
+  		assert (latitude_ >= MIN_LATITUDE && latitude_ <= MAX_LATITUDE) :
+  			"Latitude out of bounds";
+  		assert (longitude_ >= MIN_LONGITUDE && longitude_ <= MAX_LONGITUDE) :
+  			"Longitude out of bounds";
+  		}
+  		
 
 }
