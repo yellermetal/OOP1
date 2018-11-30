@@ -230,9 +230,9 @@ public class GeoPoint {
      **/
   	private void checkRep() {
   		assert (latitude_ >= MIN_LATITUDE && latitude_ <= MAX_LATITUDE) :
-  			"Latitude out of bounds";
+  			"Latitude out of bounds.";
   		assert (longitude_ >= MIN_LONGITUDE && longitude_ <= MAX_LONGITUDE) :
-  			"Longitude out of bounds";
+  			"Longitude out of bounds.";
   		}
   		
 
