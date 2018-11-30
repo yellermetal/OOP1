@@ -104,6 +104,8 @@ public class GeoFeature {
   	  	name_ = gf.name_;
   	  	length_ = gf.length_ + gs.getLength();
   	    geoSegments_ = new ArrayList<GeoSegment>();
+  	    
+  	    // Copying the segment list from original feature to constructed feature with addition of gs
   		for(GeoSegment segment : gf.geoSegments_.subList(1, gf.geoSegments_.size()))
   		{
   	  		GeoPoint tmpPoint1 = new GeoPoint(segment.getP1().getLatitude() ,segment.getP1().getLongitude());
@@ -226,6 +228,7 @@ public class GeoFeature {
   	public Iterator<GeoSegment> getGeoSegments() {
   		checkRep();
   		ArrayList<GeoSegment> newSegmentList = new ArrayList<GeoSegment>();
+  		// Copying the segment list to prevent rep exposure
   		for(GeoSegment segment : geoSegments_)
   		{
   	  		GeoPoint tmpPoint1 = new GeoPoint(segment.getP1().getLatitude() ,segment.getP1().getLongitude());
