@@ -1,6 +1,6 @@
 package homework1;
 
-import java.text.DecimalFormat;
+
 
 /**
  * A WalkingDirections class knows how to create a textual description of
@@ -52,14 +52,13 @@ public class WalkingRouteFormatter extends RouteFormatter {
      * above.
      **/
   	public String computeLine(GeoFeature geoFeature, double origHeading) {
-  		
-		// Implementation hint:
-		// You may find the class java.text.DecimalFormat useful when
-		// implementing this method. More info can be found at:
-		// http://docs.oracle.com/javase/tutorial/java/data/numberformat.html
-		// and at:
-		// http://docs.oracle.com/javase/8/docs/api/java/text/DecimalFormat.html
-					 
-  		// TODO Implement this method
+  		String instructions = "";
+		instructions += getTurnString(origHeading, geoFeature.getStartHeading());
+		instructions += "onto " + geoFeature.getName() + " and walk for ";		
+		double time = geoFeature.getLength() * 20;
+		int Minutes = (int) Math.rint(time);
+		instructions += Minutes;
+		instructions += " minutes.";		
+		return instructions;
   	}
 }
