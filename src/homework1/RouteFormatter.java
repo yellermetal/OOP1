@@ -1,5 +1,6 @@
 package homework1;
 
+import java.util.Iterator;
 
 /**
  * A RouteFormatter class knows how to create a textual description of
@@ -19,12 +20,16 @@ public abstract class RouteFormatter {
      * 	       human-readable directions from start to end along this route.
      **/
   	public String computeDirections(Route route, double heading) {
-  		// Implementation hint:
-		// This method should call computeLine() for each geographic
-		// feature in this route and concatenate the results into a single
-		// String.
-  		
-  		// TODO Implement this method
+  		Iterator<GeoFeature> iterator = route.getGeoFeatures();
+  		GeoFeature itrGeoFeature;
+  		String directions = "";
+  		while(iterator.hasNext())
+  		{
+  			itrGeoFeature = iterator.next();
+  			directions += computeLine(itrGeoFeature, heading) + "\n";
+  			heading = itrGeoFeature.getEndHeading();
+  		}
+  		return directions;
   	}
 
 
@@ -61,7 +66,42 @@ public abstract class RouteFormatter {
      * and likewise for left turns.
      */
   	protected String getTurnString(double origHeading, double newHeading) {
-  		// TODO Implement this method
+  		double normalizedHeading = newHeading - origHeading;
+  		normalizedHeading = (normalizedHeading >=0) ? normalizedHeading : normalizedHeading +360;
+  		String direction = "Something went wrong";
+  		if(normalizedHeading < 10 || normalizedHeading > 350)
+  		{
+  			direction = "Continue ";
+  		}
+  		else if(normalizedHeading >= 179 && normalizedHeading <= 181 )
+  		{
+  			direction = "U-turn ";
+  		}
+  		else if(normalizedHeading >= 120 && normalizedHeading < 179 )
+  		{
+  			direction = "Turn sharp right ";
+  		}
+  		else if(normalizedHeading >= 60 && normalizedHeading < 120 )
+  		{
+  			direction = "Turn right ";
+  		}
+  		else if(normalizedHeading >= 10 && normalizedHeading < 60 )
+  		{
+  			direction = "Turn slight right ";
+  		}
+  		else if(normalizedHeading > 181 && normalizedHeading <= 240 )
+  		{
+  			direction = "Turn sharp left ";
+  		}
+  		else if(normalizedHeading > 240 && normalizedHeading <= 300 )
+  		{
+  			direction = "Turn left ";
+  		}
+  		else if(normalizedHeading > 300 && normalizedHeading <= 350 )
+  		{
+  			direction = "Turn slight left ";
+  		}
+  		return direction;
   	}
 
 }
