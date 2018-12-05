@@ -41,8 +41,20 @@ package homework1;
  **/
 public class GeoSegment  {
 
+	private final String name_;
+  	private final GeoPoint p1_;
+  	private final GeoPoint p2_;
+  	private final double length_;
+  	private final double heading_;	
 	
-  	// TODO Write abstraction function and representation invariant
+  	
+	// Abstraction Function:
+	// Represents a straight line segment on the earth that starts at point p1_, heading in direction of heading_ and ends at point p2_, named name_and stretches over length length_.
+	
+	// Representation invariant for every GeoSegment s:
+	// heading_ is a number in range [0,360) 
+  	// name_ is nonempty string
+  	// length_ > 0
 	
 	
   	/**
@@ -51,7 +63,12 @@ public class GeoSegment  {
      * @effects constructs a new GeoSegment with the specified name and endpoints.
      **/
   	public GeoSegment(String name, GeoPoint p1, GeoPoint p2) {
-  		// TODO Implement this method
+  		name_ = name;
+  		p1_ = new GeoPoint(p1.getLatitude(), p1.getLongitude());
+  		p2_ = new GeoPoint(p2.getLatitude(), p2.getLongitude());
+  		length_ = p1.distanceTo(p2);
+  		heading_ = p1.headingTo(p2);
+  		checkRep();
   	}
 
 
@@ -61,7 +78,12 @@ public class GeoSegment  {
      *         && gs.p1 = this.p2 && gs.p2 = this.p1
      **/
   	public GeoSegment reverse() {
-  		// TODO Implement this method
+  		checkRep();
+  		GeoPoint tmpP1 = new GeoPoint(p1_.getLatitude(), p1_.getLongitude());
+  		GeoPoint tmpP2 = new GeoPoint(p2_.getLatitude(), p2_.getLongitude());		
+  		GeoSegment reversedSegment = new GeoSegment(name_, tmpP2, tmpP1);
+  		checkRep();
+  		return reversedSegment;
   	}
 
 
@@ -70,7 +92,8 @@ public class GeoSegment  {
      * @return the name of this GeoSegment.
      */
   	public String getName() {
-  		// TODO Implement this method
+  		checkRep();
+  		return name_;
   	}
 
 
@@ -79,7 +102,10 @@ public class GeoSegment  {
      * @return first endpoint of the segment.
      */
   	public GeoPoint getP1() {
-  		// TODO Implement this method
+  		checkRep();
+  		GeoPoint tmpP1 = new GeoPoint(p1_.getLatitude(), p1_.getLongitude());
+  		checkRep();
+  		return tmpP1;
   	}
 
 
@@ -88,7 +114,10 @@ public class GeoSegment  {
      * @return second endpoint of the segment.
      */
   	public GeoPoint getP2() {
-  		// TODO Implement this method
+  		checkRep();
+  		GeoPoint tmpP2 = new GeoPoint(p2_.getLatitude(), p2_.getLongitude());
+  		checkRep();
+  		return tmpP2;
   	}
 
 
@@ -98,7 +127,8 @@ public class GeoSegment  {
      *         Technion approximation.
      */
   	public double getLength() {
-  		// TODO Implement this method
+  		checkRep();
+  		return length_;
   	}
 
 
@@ -109,7 +139,8 @@ public class GeoSegment  {
      *         flat-surface, near the Technion approximation.
      **/
   	public double getHeading() {
-  		// TODO Implement this method
+  		checkRep();
+  		return heading_;
   	}
 
 
@@ -119,7 +150,15 @@ public class GeoSegment  {
      *         && gs.name = this.name && gs.p1 = this.p1 && gs.p2 = this.p2
    	 **/
   	public boolean equals(Object gs) {
-  		// TODO Implement this method
+  		checkRep();
+  		if(gs == null || !(gs instanceof GeoSegment))
+  		{
+  			return false;
+  		}
+  		GeoSegment geoSegment = (GeoSegment)gs;
+  		boolean result = ( geoSegment.getName() == name_ && p1_.equals(geoSegment.getP1()) && p2_.equals(geoSegment.getP2())) ? true : false;
+  		checkRep();
+  		return result;
   	}
 
 
@@ -140,8 +179,21 @@ public class GeoSegment  {
      * @return a string representation of this.
      **/
   	public String toString() {
-  		// TODO Implement this method
+  		checkRep();
+  		String geoFeatureString = "Georaphical segment " + name_ + " starts at point: " + p1_.toString() + " and heading in " + heading_ + " to end point: " + p2_.toString() + ". The length of the feature is " + length_ + " KM.";
+  		checkRep();
+  		return geoFeatureString;
   	}
-
+  	
+	/**
+	 * Checks to see if the representation invariant is being violated.
+	 * @throws AssertionError if representation invariant is violated.
+	 **/
+  	private void checkRep() {
+		assert (heading_ >= 0 && heading_ < 360) :
+			"Wrong heading direction.";
+		assert (name_.length() >= 1) :
+			"Not viable feature name.";
 }
 
+}

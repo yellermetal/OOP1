@@ -51,7 +51,7 @@ public class GeoFeature {
   	// to traverse the feature one should head in azimuth startHeading_ and go through all segments in geoSegments_ list and head in endHeading_ azimuth at the last segment
 	
 	// Representation invariant for every GeoFeature g:
-	// startHeading_ and endHeading_ numbers in range [0,360) and equal to geoSegments_.get(0) and geoSegments_.get(geoSegments_.size()-1) accordinly
+	// startHeading_ and endHeading_ numbers in range [0,360) and equal to geoSegments_.get(0).getHeading() and geoSegments_.get(geoSegments_.size()-1).getHeading() accordingly
   	// name_ is nonempty string
   	// length_ is the sum of all lengths of segments inside geoSegments_ list
   	// geoSegments_ a nonempty list of GeoSegments with similar name and p2 of every segment in list equals to p1 of the next segment in list,
@@ -86,7 +86,7 @@ public class GeoFeature {
   	
   	
   	/**
-     * Constructs a new GeoFeature.
+     * Constructs a new GeoFeature that equals to gf with gs apeended to the end.
      * @requires gf != null && gs != null
      * @effects Constructs a new GeoFeature, r, such that
      *	        r.name = gf.name &&
@@ -97,16 +97,16 @@ public class GeoFeature {
      *          r.geoSegments = gf.geoSegments.append(gs)
      **/
   	private GeoFeature(GeoFeature gf, GeoSegment gs) {
-  	  	start_ = gf.start_;
-  	  	end_ = gf.end_;
+  	  	start_ = new GeoPoint(gf.start_.getLatitude(), gf.start_.getLongitude());
+  	  	end_ = new GeoPoint(gs.getP2().getLatitude(), gs.getP2().getLongitude());
   	  	startHeading_ = gf.startHeading_;
-  	  	endHeading_ = gf.endHeading_;
+  	  	endHeading_ = gs.getHeading();
   	  	name_ = gf.name_;
   	  	length_ = gf.length_ + gs.getLength();
   	    geoSegments_ = new ArrayList<GeoSegment>();
   	    
   	    // Copying the segment list from original feature to constructed feature with addition of gs
-  		for(GeoSegment segment : gf.geoSegments_.subList(1, gf.geoSegments_.size()))
+  		for(GeoSegment segment : gf.geoSegments_)
   		{
   	  		GeoPoint tmpPoint1 = new GeoPoint(segment.getP1().getLatitude() ,segment.getP1().getLongitude());
   	  		GeoPoint tmpPoint2 = new GeoPoint(segment.getP2().getLatitude() ,segment.getP2().getLongitude());
@@ -254,7 +254,18 @@ public class GeoFeature {
   			return false;
   		}
   		GeoFeature gf = (GeoFeature)o;
-  		boolean result = ( geoSegments_.equals(gf) ) ? true : false;
+  		GeoSegment thisGeoSegment;
+  		GeoSegment inputGeoSegment;
+  		boolean result = false;
+  		Iterator<GeoSegment> thisIterator = geoSegments_.iterator();
+  		Iterator<GeoSegment> gfIterator = gf.getGeoSegments();
+  		while (thisIterator.hasNext() && gfIterator.hasNext())
+  		{
+  			thisGeoSegment = thisIterator.next();
+  			inputGeoSegment = gfIterator.next();
+  			result = ( thisGeoSegment.equals(inputGeoSegment) ) ? true : false;
+  			result = ( (geoSegments_.iterator().hasNext() && gf.getGeoSegments().hasNext()) || (!geoSegments_.iterator().hasNext() && !gf.getGeoSegments().hasNext()) ) ? true : false;
+  		}
   		checkRep();
   		return result;
   	}
@@ -295,15 +306,18 @@ public class GeoFeature {
 			"Wrong end heading direction.";
 		assert (name_.length() >= 1) :
 			"Not viable feature name.";
-		double tmpLength = 0;
-		GeoPoint prevPoint = geoSegments_.get(0).getP1();
-		for(GeoSegment segment : geoSegments_)
-  		{
-			assert (prevPoint.equals(segment.getP1())) :
-				"Wrong segment sequence.";
-  	  		tmpLength += segment.getLength();
-  	  		prevPoint = segment.getP2();
-  		}
+		double tmpLength = geoSegments_.get(0).getLength();
+		GeoPoint prevPoint = geoSegments_.get(0).getP2();
+		if (geoSegments_.size() > 1)
+		{
+			for(GeoSegment segment : geoSegments_.subList(1, geoSegments_.size()))
+	  		{
+				assert (prevPoint.equals(segment.getP1())) :
+					"Wrong segment sequence.";
+	  	  		tmpLength += segment.getLength();
+	  	  		prevPoint = segment.getP2();
+	  		}
+		}
 		assert (tmpLength == length_) :
 			"Incorrect feature length.";
 		}
