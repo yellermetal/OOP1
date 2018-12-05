@@ -1,5 +1,7 @@
 package homework1;
 
+import java.text.DecimalFormat;
+
 /**
  * A GeoSegment models a straight line segment on the earth. GeoSegments 
  * are immutable.
@@ -180,7 +182,8 @@ public class GeoSegment  {
      **/
   	public String toString() {
   		checkRep();
-  		String geoFeatureString = "Georaphical segment " + name_ + " starts at point: " + p1_.toString() + " and heading in " + heading_ + " to end point: " + p2_.toString() + ". The length of the feature is " + length_ + " KM.";
+  		String shortLength = new DecimalFormat("##.#").format(length_);
+  		String geoFeatureString = "Georaphical segment " + name_ + " starts at point: " + p1_.toString() + " and heading in " + heading_ + " to end point: " + p2_.toString() + ". The length of the feature is " + shortLength + " KM.";
   		checkRep();
   		return geoFeatureString;
   	}

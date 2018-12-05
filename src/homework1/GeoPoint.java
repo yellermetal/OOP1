@@ -129,7 +129,7 @@ public class GeoPoint {
 
   	/**
      * Computes the compass heading between GeoPoints.
-     * @requires gp != null && !this.equals(gp)
+     * @requires gp != null
      * @return the compass heading h from this to gp, in degrees, using the
      *         flat-surface, near the Technion approximation, such that
      *         0 <= h < 360. In compass headings, north = 0, east = 90,
@@ -141,6 +141,10 @@ public class GeoPoint {
   		int gpCenteredLongitude = gp.getLongitude() - longitude_;
   		double headingDirection = Math.atan2(gpCenteredLongitude, gpCenteredLatitude) * 180 / Math.PI;
   		double nonNegativeDirection = (headingDirection >= 0 ) ? headingDirection : headingDirection + 360;
+  		if(gpCenteredLatitude == 0 && gpCenteredLongitude == 0)
+  		{
+  			nonNegativeDirection = 0;
+  		}
   		checkRep();
   		return nonNegativeDirection;
   	}

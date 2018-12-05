@@ -1,6 +1,7 @@
 package homework1;
 
 import java.util.Iterator;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 /**
  * A GeoFeature represents a route from one location to another along a
@@ -288,7 +289,8 @@ public class GeoFeature {
      **/
   	public String toString() {
   		checkRep();
-  		String geoFeatureString = "Georaphical feature " + name_ + " starts at: " + start_.toString() + " and ends at: " + end_.toString() + ". The length of the feature is " + length_ + " KM.";
+  		String shortLength = new DecimalFormat("##.#").format(length_);
+  		String geoFeatureString = "Georaphical feature " + name_ + " starts at: " + start_.toString() + " and ends at: " + end_.toString() + ". The length of the feature is " + shortLength + " KM.";
   		checkRep();
   		return geoFeatureString;
   	}
