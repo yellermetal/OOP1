@@ -1,5 +1,8 @@
 package homework1;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 /**
  * A GeoPoint is a point on the earth. GeoPoints are immutable.
  * <p>
@@ -214,13 +217,15 @@ public class GeoPoint {
 	
   		}
   		
-  		String latitudeString = Integer.toString(degreeLatitude) + " degrees. " + Integer.toString(minuteLatitude) + " minutes. " + Integer.toString(secondsLatitude) + " seconds.";
-  		String longitudeString = Integer.toString(degreeLongitude) + " degrees. " + Integer.toString(minuteLongitude) + " minutes. " + Integer.toString(secondsLongitude) + " seconds.";
+  		//String latitudeString = Integer.toString(degreeLatitude) + " degrees. " + Integer.toString(minuteLatitude) + " minutes. " + Integer.toString(secondsLatitude) + " seconds.";
+  		//String longitudeString = Integer.toString(degreeLongitude) + " degrees. " + Integer.toString(minuteLongitude) + " minutes. " + Integer.toString(secondsLongitude) + " seconds.";
   		
-  		latitudeString += (signLatitude > 0) ? " N latitude." :" S latitude.";
-  		longitudeString += (signLongitude > 0) ? " E longitude." :" W longitude.";
+  		String latitudeString = (signLatitude > 0) ? " N" : " S";//" N latitude" :" S latitude";
+  		String longitudeString = (signLongitude > 0) ? " E" : " W"; //" E longitude" :" W longitude";
   		
-  		String geoPointString = latitudeString + " , " + longitudeString;
+  		NumberFormat formatter = new DecimalFormat("#00.000000");
+  		String geoPointString =  "(" + String.valueOf(formatter.format((double)latitude_/MILLION)) + latitudeString + ", " 
+  								     + String.valueOf(formatter.format((double)longitude_/MILLION)) + longitudeString + ")";
   		checkRep();
   		return geoPointString;
   	}
