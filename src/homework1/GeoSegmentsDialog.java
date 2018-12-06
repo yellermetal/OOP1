@@ -37,8 +37,8 @@ public class GeoSegmentsDialog extends JDialog {
 		
 		DefaultListModel<GeoSegment> listModel = new DefaultListModel<>();
 		
-		for (GeoSegment geo_segment : ExampleGeoSegments.segments) {
-	        listModel.addElement(geo_segment);
+		for (GeoSegment segment : ExampleGeoSegments.segments) {
+	        listModel.addElement(segment);
 		}
 		
 		lstSegments = new JList<>(listModel);
@@ -52,9 +52,8 @@ public class GeoSegmentsDialog extends JDialog {
 		
 		JButton btnAdd = new JButton("Add");
 		btnAdd.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) {			
 				parent.addSegment(lstSegments.getSelectedValue());
-				setVisible(false);
 			}
 		});
 		
@@ -73,7 +72,7 @@ public class GeoSegmentsDialog extends JDialog {
 		GridBagConstraints c = new GridBagConstraints();
 		this.setLayout(gridbag);
 
-		c.fill = GridBagConstraints.HORIZONTAL;
+		c.fill = GridBagConstraints.BOTH;
 
 		c.gridx = 0;
 		c.gridy = 0;
@@ -106,7 +105,8 @@ public class GeoSegmentsDialog extends JDialog {
 		c.gridy = 2;
 		c.gridwidth = 1;
 		c.gridheight = 1;
-		c.insets = new Insets(20,0,0,0);
+		c.fill = GridBagConstraints.VERTICAL;
+		c.insets = new Insets(20,580,0,0);
 
 		gridbag.setConstraints(btnCancel, c);
 		this.add(btnCancel);

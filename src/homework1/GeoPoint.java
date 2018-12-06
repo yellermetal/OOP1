@@ -187,41 +187,10 @@ public class GeoPoint {
   		checkRep();
   		int signLatitude = (int) Math.signum(latitude_);
   		int signLongitude = (int) Math.signum(longitude_);
-  		int tmpLatitude_ = latitude_ * signLatitude;
-  		int tmpLongitude_ = longitude_ * signLongitude;
-  		
-  		// Acquiring the degrees of latitude and longitude 
-  		int degreeLatitude = tmpLatitude_ / MILLION;
-  		int degreeLongitude = tmpLongitude_ / MILLION;
-  		
-  		// Acquiring the minutes of latitude and longitude 
-  		int minuteLatitude = (tmpLatitude_ % MILLION) * 60;
-  		int minuteLongitude = (tmpLongitude_ % MILLION) * 60;
-  		
-  		int i = 0;
-  		for (i = 0; i < 6 ; i++)
-  		{
-  			minuteLatitude =  minuteLatitude / 10;
-  			minuteLongitude = minuteLongitude / 10;
-	
-  		}
-  		
-  		// Acquiring the rounded seconds of latitude and longitude 
-  		int secondsLatitude = ((tmpLatitude_ % MILLION) - (minuteLatitude * MILLION) / 60 ) * 3600;
-  		int secondsLongitude = ((tmpLongitude_ % MILLION) - (minuteLongitude * MILLION) / 60 ) * 3600;	
-  		
-  		for (i = 0; i < 6 ; i++)
-  		{
-  			secondsLatitude =  secondsLatitude / 10;
-  			secondsLongitude = secondsLongitude / 10;
-	
-  		}
-  		
-  		//String latitudeString = Integer.toString(degreeLatitude) + " degrees. " + Integer.toString(minuteLatitude) + " minutes. " + Integer.toString(secondsLatitude) + " seconds.";
-  		//String longitudeString = Integer.toString(degreeLongitude) + " degrees. " + Integer.toString(minuteLongitude) + " minutes. " + Integer.toString(secondsLongitude) + " seconds.";
-  		
-  		String latitudeString = (signLatitude > 0) ? " N" : " S";//" N latitude" :" S latitude";
-  		String longitudeString = (signLongitude > 0) ? " E" : " W"; //" E longitude" :" W longitude";
+
+  				
+  		String latitudeString = (signLatitude > 0) ? " N" : " S";
+  		String longitudeString = (signLongitude > 0) ? " E" : " W";
   		
   		NumberFormat formatter = new DecimalFormat("#00.000000");
   		String geoPointString =  "(" + String.valueOf(formatter.format((double)latitude_/MILLION)) + latitudeString + ", " 
