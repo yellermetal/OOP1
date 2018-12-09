@@ -1,8 +1,8 @@
 package homework1;
 
-import java.awt.Frame;
-import javax.swing.JDialog;
-import javax.swing.JList;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 
 /**
  * A JDailog GUI for choosing a GeoSegemnt and adding it to the route shown
@@ -33,6 +33,83 @@ public class GeoSegmentsDialog extends JDialog {
 		
 		this.parent = pnlParent;
 		
-		// TODO Write the body of this method
+		// create components
+		
+		DefaultListModel<GeoSegment> listModel = new DefaultListModel<>();
+		
+		for (GeoSegment segment : ExampleGeoSegments.segments) {
+	        listModel.addElement(segment);
+		}
+		
+		lstSegments = new JList<>(listModel);
+		lstSegments.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+		JScrollPane scrlSegments = new JScrollPane(lstSegments);
+		scrlSegments.setPreferredSize(new Dimension(750, 150));
+		
+		JLabel lblSegments = new JLabel("GeoSegments:");
+		lblSegments.setLabelFor(lstSegments);
+		
+		JButton btnAdd = new JButton("Add");
+		btnAdd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {			
+				parent.addSegment(lstSegments.getSelectedValue());
+			}
+		});
+		
+		JButton btnCancel = new JButton("Cancel");
+		btnCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+			}
+		});
+		
+		
+		// arrange components on grid
+		JPanel panel = (JPanel) this.getContentPane();
+		panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+		GridBagLayout gridbag = new GridBagLayout();
+		GridBagConstraints c = new GridBagConstraints();
+		this.setLayout(gridbag);
+
+		c.fill = GridBagConstraints.BOTH;
+
+		c.gridx = 0;
+		c.gridy = 0;
+		c.gridwidth = 1;
+		c.gridheight = 1;
+		c.insets = new Insets(0,0,0,0);
+		
+		gridbag.setConstraints(lblSegments, c);
+		this.add(lblSegments);
+		
+		c.gridx = 0;
+		c.gridy = 1;
+		c.gridwidth = 3;
+		c.gridheight = 1;
+		c.insets = new Insets(0,0,0,0);
+
+		gridbag.setConstraints(scrlSegments, c);
+		this.add(scrlSegments);
+		
+		c.gridx = 0;
+		c.gridy = 2;
+		c.gridwidth = 1;
+		c.gridheight = 1;
+		c.insets = new Insets(20,0,0,20);
+
+		gridbag.setConstraints(btnAdd, c);
+		this.add(btnAdd);
+		
+		c.gridx = 1;
+		c.gridy = 2;
+		c.gridwidth = 1;
+		c.gridheight = 1;
+		c.fill = GridBagConstraints.VERTICAL;
+		c.insets = new Insets(20,580,0,0);
+
+		gridbag.setConstraints(btnCancel, c);
+		this.add(btnCancel);
+
 	}
 }

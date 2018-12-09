@@ -1,5 +1,8 @@
 package homework1;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 /**
  * A GeoPoint is a point on the earth. GeoPoints are immutable.
  * <p>
@@ -129,7 +132,7 @@ public class GeoPoint {
 
   	/**
      * Computes the compass heading between GeoPoints.
-     * @requires gp != null
+     * @requires gp != null && !this.equals(gp)
      * @return the compass heading h from this to gp, in degrees, using the
      *         flat-surface, near the Technion approximation, such that
      *         0 <= h < 360. In compass headings, north = 0, east = 90,
@@ -141,10 +144,6 @@ public class GeoPoint {
   		int gpCenteredLongitude = gp.getLongitude() - longitude_;
   		double headingDirection = Math.atan2(gpCenteredLongitude, gpCenteredLatitude) * 180 / Math.PI;
   		double nonNegativeDirection = (headingDirection >= 0 ) ? headingDirection : headingDirection + 360;
-  		if(gpCenteredLatitude == 0 && gpCenteredLongitude == 0)
-  		{
-  			nonNegativeDirection = 0;
-  		}
   		checkRep();
   		return nonNegativeDirection;
   	}
@@ -188,43 +187,14 @@ public class GeoPoint {
   		checkRep();
   		int signLatitude = (int) Math.signum(latitude_);
   		int signLongitude = (int) Math.signum(longitude_);
-  		int tmpLatitude_ = latitude_ * signLatitude;
-  		int tmpLongitude_ = longitude_ * signLongitude;
+
+  				
+  		String latitudeString = (signLatitude > 0) ? " N" : " S";
+  		String longitudeString = (signLongitude > 0) ? " E" : " W";
   		
-  		// Acquiring the degrees of latitude and longitude 
-  		int degreeLatitude = tmpLatitude_ / MILLION;
-  		int degreeLongitude = tmpLongitude_ / MILLION;
-  		
-  		// Acquiring the minutes of latitude and longitude 
-  		int minuteLatitude = (tmpLatitude_ % MILLION) * 60;
-  		int minuteLongitude = (tmpLongitude_ % MILLION) * 60;
-  		
-  		int i = 0;
-  		for (i = 0; i < 6 ; i++)
-  		{
-  			minuteLatitude =  minuteLatitude / 10;
-  			minuteLongitude = minuteLongitude / 10;
-	
-  		}
-  		
-  		// Acquiring the rounded seconds of latitude and longitude 
-  		int secondsLatitude = ((tmpLatitude_ % MILLION) - (minuteLatitude * MILLION) / 60 ) * 3600;
-  		int secondsLongitude = ((tmpLongitude_ % MILLION) - (minuteLongitude * MILLION) / 60 ) * 3600;	
-  		
-  		for (i = 0; i < 6 ; i++)
-  		{
-  			secondsLatitude =  secondsLatitude / 10;
-  			secondsLongitude = secondsLongitude / 10;
-	
-  		}
-  		
-  		String latitudeString = Integer.toString(degreeLatitude) + " degrees. " + Integer.toString(minuteLatitude) + " minutes. " + Integer.toString(secondsLatitude) + " seconds.";
-  		String longitudeString = Integer.toString(degreeLongitude) + " degrees. " + Integer.toString(minuteLongitude) + " minutes. " + Integer.toString(secondsLongitude) + " seconds.";
-  		
-  		latitudeString += (signLatitude > 0) ? " N latitude." :" S latitude.";
-  		longitudeString += (signLongitude > 0) ? " E longitude." :" W longitude.";
-  		
-  		String geoPointString = latitudeString + " , " + longitudeString;
+  		NumberFormat formatter = new DecimalFormat("#00.000000");
+  		String geoPointString =  "(" + String.valueOf(formatter.format((double)latitude_/MILLION)) + latitudeString + ", " 
+  								     + String.valueOf(formatter.format((double)longitude_/MILLION)) + longitudeString + ")";
   		checkRep();
   		return geoPointString;
   	}

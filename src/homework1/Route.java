@@ -141,7 +141,7 @@ public class Route {
   	  	  		}
   	  	  		prevName = segment.getName();
   	  		}
-  	  		if(geoFeatures_.get(geoFeatures_.size()-1).equals(gf))
+  	  		if(geoFeatures_.size() == 0 || geoFeatures_.get(geoFeatures_.size()-1).equals(gf))
   	  		{
   	  			geoFeatures_.add(gf);
   	  		}
@@ -280,7 +280,7 @@ public class Route {
   	  	  		}
   	  	  		prevName = segment.getName();
   	  		}
-  	  		if(newFeatureList.get(newFeatureList.size()-1).equals(gf))
+  	  		if(newFeatureList.size() == 0 || newFeatureList.get(newFeatureList.size()-1).equals(gf))
   	  		{
   	  			newFeatureList.add(gf);
   	  		}
