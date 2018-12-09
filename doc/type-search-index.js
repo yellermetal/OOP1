@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"homework1","l":"DrivingRouteFormatter"},{"p":"homework1","l":"GeoFeature"},{"p":"homework1","l":"GeoPoint"},{"p":"homework1","l":"GeoSegment"},{"p":"homework1","l":"Route"},{"p":"homework1","l":"RouteFormatter"},{"p":"homework1","l":"WalkingRouteFormatter"}]

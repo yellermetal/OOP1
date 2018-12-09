@@ -1,5 +1,6 @@
 package homework1;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -140,7 +141,7 @@ public class Route {
   	  	  		}
   	  	  		prevName = segment.getName();
   	  		}
-  	  		if(geoFeatures_.get(geoFeatures_.size()-1).equals(gf))
+  	  		if(geoFeatures_.size() == 0 || geoFeatures_.get(geoFeatures_.size()-1).equals(gf))
   	  		{
   	  			geoFeatures_.add(gf);
   	  		}
@@ -215,7 +216,7 @@ public class Route {
   	/**
      * Creates a new route that is equal to this route with gs appended to
      * its end.
-   	 * @requires gs != null && gs.p1 == this.end
+   	 * @requires gs != null && (gs.p1 == this.end || gs.p2 == this.end)
      * @return a new Route r such that
      *         r.end = gs.p2 &&
      *         r.endHeading = gs.heading &&
@@ -223,7 +224,16 @@ public class Route {
      **/
   	public Route addSegment(GeoSegment gs) {
   		checkRep();
-  		Route newRoute = new Route(this, gs);
+  		Route newRoute;
+  		if(gs.getP1().equals(end_))
+  		{
+  			newRoute = new Route(this, gs);
+  		}
+  		else
+  		{
+  			newRoute = new Route(this, gs.reverse());
+  		}
+  		
   		checkRep();
   		return newRoute;
   	}
@@ -270,7 +280,7 @@ public class Route {
   	  	  		}
   	  	  		prevName = segment.getName();
   	  		}
-  	  		if(newFeatureList.get(newFeatureList.size()-1).equals(gf))
+  	  		if(newFeatureList.size() == 0 || newFeatureList.get(newFeatureList.size()-1).equals(gf))
   	  		{
   	  			newFeatureList.add(gf);
   	  		}
@@ -363,7 +373,8 @@ public class Route {
      **/
   	public String toString() {
   		checkRep();
-  		String geoFeatureString = "Route starts at: " + start_.toString() + " and ends at: " + end_.toString() + ". The length of the route is " + length_ + " KM.";
+  		String shortLength = new DecimalFormat("##.#").format(length_);
+  		String geoFeatureString = "Route starts at: " + start_.toString() + " and ends at: " + end_.toString() + ". The length of the route is " + shortLength + " KM.";
   		geoFeatureString += " The route contains the next features: ";
   		for(GeoFeature feature : geoFeatures_)
   		{
